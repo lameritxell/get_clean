@@ -5,7 +5,6 @@ un<-unzip("fi", exdir = "/home/didac/cli/cleaning/")
 
 #libraries
 library(dplyr)
-library(data.table)
 
 #1<<activity labels 
 activity_labels<-un[1]
@@ -36,7 +35,7 @@ testdf<-data.frame(rep("test", l_test))
 X_test<-un[15]
 r_X_test<-read.table(X_test)
 str(r_X_test, 1) #2947 obs of 561 var
-colnames(r_X_test)<-c("index_activity") #change col names
+
 
 #<< Y_test
 Y_test<-un[16]
@@ -57,6 +56,7 @@ traindf<-data.frame(rep("train", l_train))
 X_train<-un[27]
 r_X_train<-read.table(X_train)
 dim(r_X_train) # 7352 obs from 561 variables
+
 
 #<< Y_train
 Y_train<-un[28]
@@ -116,3 +116,12 @@ df<-cbind(t_t, rb, test_train_selected) #all merged
 str(df)
 head(df, 1)
 tbl_df(df)
+
+by_activity<-select(df, -subject)
+by_activity_1<-by_activity%>% group_by(activity, tr_or_test)
+by_activity_1 %>% summarise_all(list(mean=mean, sd=sd))
+
+by_subject<-select(df, -activity)
+by_subject_1<-by_subject%>% group_by(subject, tr_or_test)
+by_subject_1 %>% summarise_all(list(mean=mean, sd=sd))
+
